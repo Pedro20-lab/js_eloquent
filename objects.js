@@ -77,6 +77,37 @@ function recursive_nth(list, index, node = 0) {
     }
 }
 
+function deepEqual(x, y) {
+  if (typeof x == "object" && x != null) {
+    let propsX = Object.keys(x);
+    let propsY = Object.keys(y);
+    if (propsX.length != propsY.length) {
+      return false;
+    }
+    for (const prop of propsX) {      
+      if (typeof x[prop] == "object") {
+        return deepEqual(x[prop], y[prop]); 
+      } else {
+         if (x[prop] !== y[prop]) {
+           return false;
+           break;
+         }
+      }  
+      
+    }
+  }
+  
+  if (x !== y) {
+    return false
+  }
+
+  return true;
+}
+
+obj1 = {'A': {'a': 1}, 'B': 2}
+obj2 = {'A': {'a': 1}, 'B': 2}
+console.log(deepEqual(obj1, obj2))
+
 //console.log(arrayToList([10, 20]).rest);
 // → {value: 10, rest: {value: 20, rest: null}}
 
@@ -86,5 +117,5 @@ function recursive_nth(list, index, node = 0) {
 //console.log(prepend(10, prepend(20, null)));
 // → {value: 10, rest: {value: 20, rest: null}}
 
-console.log(recursive_nth(arrayToList([10, 20, 30]), 2));
+//console.log(recursive_nth(arrayToList([10, 20, 30]), 2));
 // → 20
