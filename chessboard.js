@@ -11,3 +11,13 @@ for (let i = 0; i < size; i++) {
     value = !value
     console.log(output)
 }
+
+function add() {
+    return console.log('First func')
+}
+
+function add() {
+    return console.log('Second func')
+}
+
+add()
