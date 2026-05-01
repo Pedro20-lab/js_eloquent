@@ -1160,5 +1160,63 @@ function textScripts(text) {
   }).join(", ");
 }
 
-console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
+//console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
 // → 61% Han, 22% Latin, 17% Cyrillic
+
+function flatten(array) {
+  let flattenedArray = []
+  let elements = array.reduce((a, b) => { return String(a).concat( ',', String(b)) })
+  for (const element of elements) {
+    let char = Number(element)
+    if (char) {
+      flattenedArray.push(char)
+    }
+  }
+  
+  return flattenedArray
+}
+
+function loop(value, test, step, func) {
+  for (;;) {
+    if (test(value)) {
+      func(value)
+      value = step(value)
+    } else {
+      break
+    } 
+  }
+  
+}
+
+//loop(3, n => n > 0, n => n - 1, console.log);
+
+let arrays = [[1, 2, 3], [4, 5], [6]];
+
+//console.log(flatten(arrays))
+function every(array, test) {
+  for (let i = 0; i < array.length; i++) {
+    if(!test(array[i])) {
+      return false
+    }
+  }
+  return true
+}
+
+function every(array, test) {
+  
+  return !array.some(element => !test(element))
+
+  // for (let i = 0; i < array.length; i++) {
+  //   if(!test(array[i])) {
+  //     return false
+  //   }
+  // }
+  // return true
+}
+
+console.log(every([1, 3, 5], n => n < 10));
+// → true
+console.log(every([2, 4, 16], n => n < 10));
+// → false
+//console.log(every([], n => n < 10));
+// → true
