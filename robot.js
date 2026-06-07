@@ -108,26 +108,6 @@ function routeRobot(state, memory){
     return {direction: memory[0], memory: memory.slice(1)}
 }
 
-runRobot(initialState, routeRobot, [])
-
-function findRoute(graph, from, to) {
-  let work = [{at: from, route: []}];
-  for (let i = 0; i < work.length; i++) {
-    let {at, route} = work[i];
-    for (let place of graph[at]) {
-      if (place == to) return route.concat(place);
-      if (!work.some(w => w.at == place)) {
-        work.push({at: place, route: route.concat(place)});
-      }
-    }
-  }
-}
-
-console.log(findRoute(roadGraph, "Shop", 'Cabin'))
-
-
-
-
 function findRoute(graph, from, to) {
   let work = [{at: from, route: []}];
   for (let i = 0; i < work.length; i++) {
@@ -153,6 +133,41 @@ function goalOrientedRobot({place, parcels}, route) {
     return {direction: route[0], memory: route.slice(1)}
 }
 
-console.log('Started the goal oriented robot')
-runRobot(initialState, goalOrientedRobot, [])
+function largestRoute(state) {
+    let routes = []
+    let parcels = state.parcels
+    let place = state.place
+    for (let parcel of parcels) {
+        if (!routes.some(node => node === parcel.place) && place != parcel.place) {
+            let to = parcel.place
+            let route = findRoute(roadGraph, place, to);
+            routes.push(...route)
+            place = to
+        } else {
+            continue
+        }
+    }
+    place = routes[routes.length - 1]
+    for (let parcel of parcels) {
+        //if (!routes.some(node => node === parcel.place)) {
+            let to = parcel.address
+            let route = findRoute(roadGraph, place, to);
+            routes.push(...route)
+            place = to
+        //} else {
+        //    continue
+        //}
+    }
+
+    return {direction: routes[0], memory: routes.slice(1)};
+}
+
+console.log(initialState)
+runRobot(initialState, largestRoute, [])
+//for (route of largestRoute(initialState)) {
+//    console.log(route.route)
+//}
+
+
+
 
