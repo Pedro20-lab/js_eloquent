@@ -67,8 +67,6 @@ function runRobot(state, robot, memory) {
     }
 }
 
-    
-
 function randomPick(array) {
     let choice = Math.floor(Math.random() * array.length)
     return array[choice]
@@ -110,9 +108,6 @@ function routeRobot(state, memory){
     return {direction: memory[0], memory: memory.slice(1)}
 }
 
-runRobot(initialState, routeRobot, [])
-
-
 function findRoute(graph, from, to) {
   let work = [{at: from, route: []}];
   for (let i = 0; i < work.length; i++) {
@@ -147,7 +142,6 @@ function compareRobots(robot1, robot2) {
     for (let i = 0; i < 1; i++) {
         tasks[i] = VillageState.random(10)
     }
-
     for (let task of tasks) {
         robots[0].total += runRobot(task, robot1, [])
         robots[1].total += runRobot(task, robot2, [])
@@ -157,5 +151,43 @@ function compareRobots(robot1, robot2) {
         `Robot 1 average: ${robots[0].total}
 Robot 2 average: ${robots[1].total}`)
 }
+
+function largestRoute(state) {
+    let routes = []
+    let parcels = state.parcels
+    let place = state.place
+    for (let parcel of parcels) {
+        if (!routes.some(node => node === parcel.place) && place != parcel.place) {
+            let to = parcel.place
+            let route = findRoute(roadGraph, place, to);
+            routes.push(...route)
+            place = to
+        } else {
+            continue
+        }
+    }
+    place = routes[routes.length - 1]
+    for (let parcel of parcels) {
+        //if (!routes.some(node => node === parcel.place)) {
+            let to = parcel.address
+            let route = findRoute(roadGraph, place, to);
+            routes.push(...route)
+            place = to
+        //} else {
+        //    continue
+        //}
+    }
+
+    return {direction: routes[0], memory: routes.slice(1)};
+}
+
+console.log(initialState)
+runRobot(initialState, largestRoute, [])
+//for (route of largestRoute(initialState)) {
+//    console.log(route.route)
+//}
+
+
+
 
 compareRobots(goalOrientedRobot, routeRobot)
