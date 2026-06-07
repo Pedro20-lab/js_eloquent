@@ -57,13 +57,13 @@ let next = first.move("Alice's House");
 function runRobot(state, robot, memory) {
     for (turn = 0;;turn++) {
         if(state.parcels.length == 0) {
-            console.log(`Done in ${turn} turns`);
+            return turn //console.log(`Done in ${turn} turns`);
             break;
         }
         let action = robot(state, memory);
         state = state.move(action.direction)
         memory = action.memory
-        console.log(`Moved to  ${action.direction}`)
+        //console.log(`Moved to  ${action.direction}`)
     }
 }
 
@@ -138,6 +138,24 @@ function goalOrientedRobot({place, parcels}, route) {
     return {direction: route[0], memory: route.slice(1)}
 }
 
-console.log('Started the goal oriented robot')
-runRobot(initialState, goalOrientedRobot, [])
+function compareRobots(robot1, robot2) {
+    let robots = [
+        {robot: robot1, total: 0},
+        {robot: robot2, total: 0}
+    ]
+    let tasks = []
+    for (let i = 0; i < 1; i++) {
+        tasks[i] = VillageState.random(10)
+    }
 
+    for (let task of tasks) {
+        robots[0].total += runRobot(task, robot1, [])
+        robots[1].total += runRobot(task, robot2, [])
+    }
+
+    console.log(
+        `Robot 1 average: ${robots[0].total}
+Robot 2 average: ${robots[1].total}`)
+}
+
+compareRobots(goalOrientedRobot, routeRobot)
