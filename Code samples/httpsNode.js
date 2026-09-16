@@ -30,10 +30,38 @@ function getText(url, callback) {
     });
 }
 
-getText("https://aplicaciones.adres.gov.co/BDUA_Internet/Pages/RespuestaConsulta.aspx?tokenId=TzRDmhr/SEljTA2iGktSNg==", (err, data) => {
-    if (err) {
-        console.error("Error fetching text:", err);
-    } else {
-        console.log("Fetched text:", data);
-    }
-})
+function getJSON(url) {
+    request = https.get(url);
+    return new Promise((resolve, reject) => {
+        request.on("response", response => {
+            parseJSON(response, (err, json) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(json);
+                }
+            });
+        });
+    });
+}
+
+const urls = [ 
+    /* zero or more URLs here */
+    'https://www.panamericana.com.co/la-trampa-de-la-felicidad-deja-de-luchar-y-comienza-a-vivir/p?srsltid=AfmBOorZEKIEWUoSIBgspKBM74TSh0H8rugkORfZKJMiNqPcpeUPGl4w',
+    'https://www.planetadelibros.com.co/libro-la-trampa-de-la-felicidad/243177',
+    'https://www.librerialerner.com.co/la-trampa-de-la-felicidad-9788408276807arnoia/p?srsltid=AfmBOoqf-_1vVso1In67lDnuEejoVqcIXAevnPArL33sMCvumJbr59yy',
+    'https://ww3.lectulandia.co/book/la-trampa-de-la-felicidad/'
+];
+
+// And convert it to an array of Promise objects
+promises = urls.map(url => fetch(url).then(r => r.text()));
+// Now get a Promise to run all those Promises in parallel
+Promise.all(promises)
+    .then(bodies => { console.log(bodies); })
+    .catch(e => console.log(e));
+
+Promise.allSettled([Promise.resolve(1), Promise.reject(2), 3]).then(results => {
+    results[0] // => { status: "fulfilled", value: 1 }
+    results[1] // => { status: "rejected", reason: 2 }
+    results[2] // => { status: "fulfilled", value: 3 }
+});
